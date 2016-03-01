@@ -164,7 +164,7 @@ module Apartment
       #
       def patch_search_path(sql)
         search_path = "SET search_path = \"#{current}\", #{default_tenant};"
-
+        sql.gsub!("CREATE SCHEMA #{default_tenant};", "")
         sql
           .split("\n")
           .select {|line| check_input_against_regexps(line, PSQL_DUMP_BLACKLISTED_STATEMENTS).empty?}
