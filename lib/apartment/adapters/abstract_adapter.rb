@@ -179,7 +179,7 @@ module Apartment
       #   @param {String} tenant Database name
       #
       def connect_to_new(tenant)
-        Apartment.establish_connection multi_tenantify(tenant)
+        Apartment.establish_connection multi_tenantify(tenant, false)
         Apartment.connection.active?   # call active? to manually check if this connection is valid
       rescue *rescuable_exceptions => exception
         Apartment::Tenant.reset if reset_on_connection_exception?
