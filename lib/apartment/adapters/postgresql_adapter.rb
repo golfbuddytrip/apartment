@@ -132,8 +132,7 @@ module Apartment
         #   .join(' ')
 
         # `pg_dump -s -x -O -n #{default_tenant} #{excluded_tables} #{dbname}`
-
-        with_pg_env { `pg_dump -s -x -O -n #{default_tenant} #{dbname}` }
+        with_pg_env { `pg_dump -s -x -O -n #{default_tenant} #{@config[:database]}` }
       end
 
       #   Dump data from schema_migrations table
@@ -141,7 +140,7 @@ module Apartment
       #   @return {String} raw SQL contaning inserts with data from schema_migrations
       #
       def pg_dump_schema_migrations_data
-        with_pg_env { `pg_dump -a --inserts -t schema_migrations -t ar_internal_metadata -n #{default_tenant} #{dbname}` }
+        with_pg_env { `pg_dump -a --inserts -t schema_migrations -t ar_internal_metadata -n #{default_tenant} #{@config[:database]}` }
       end
 
       # Temporary set Postgresql related environment variables if there are in @config
