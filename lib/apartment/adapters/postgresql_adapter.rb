@@ -132,7 +132,7 @@ module Apartment
         #   .join(' ')
 
         # `pg_dump -s -x -O -n #{default_tenant} #{excluded_tables} #{dbname}`
-
+        binding.pry
         with_pg_env { `pg_dump -s -x -O -n #{default_tenant} #{dbname}` }
       end
 
