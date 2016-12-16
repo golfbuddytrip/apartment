@@ -37,6 +37,7 @@ module Apartment
       #
       def reset
         @current = default_tenant
+        @current_schema = db_connection_config(@current)[:schema] || @current
         Apartment.connection.schema_search_path = full_search_path
       end
 
@@ -64,13 +65,15 @@ module Apartment
       def connect_to_new(tenant = nil)
         return reset if tenant.nil?
         Apartment.establish_connection multi_tenantify(tenant, false)
-        raise ActiveRecord::StatementInvalid.new("Could not find schema #{tenant}") unless Apartment.connection.schema_exists? tenant
+        new_schema = db_connection_config(@current)[:schema] || tenant.to_s
+        raise ActiveRecord::StatementInvalid.new("Could not find schema #{tenant}") unless Apartment.connection.schema_exists? new_schema
 
         @current = tenant.to_s
+        @current_schema = new_schema
         Apartment.connection.schema_search_path = full_search_path
 
       rescue *rescuable_exceptions
-        raise TenantNotFound, "One of the following schema(s) is invalid: \"#{tenant}\" #{full_search_path}"
+        raise TenantNotFound, "One of the following schema(s) is invalid: \"#{@current_schema}\" #{full_search_path}"
       end
 
     private
@@ -86,7 +89,7 @@ module Apartment
       end
 
       def persistent_schemas
-        [@current, Apartment.persistent_schemas].flatten
+        [@current_schema || @current, Apartment.persistent_schemas].flatten
       end
     end
 
