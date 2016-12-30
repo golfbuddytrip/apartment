@@ -64,7 +64,11 @@ module Apartment
       #
       def connect_to_new(tenant = nil)
         return reset if tenant.nil?
-        # Apartment.establish_connection multi_tenantify(tenant, false)
+        
+        if $0 =~ /rake$/
+          Apartment.establish_connection multi_tenantify(tenant, false)
+        end
+        
         new_schema = db_connection_config(tenant)[:schema] || tenant.to_s
         # raise ActiveRecord::StatementInvalid.new("Could not find schema #{tenant}") unless Apartment.connection.schema_exists? new_schema
 
