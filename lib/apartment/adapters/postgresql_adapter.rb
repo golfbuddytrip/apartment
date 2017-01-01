@@ -65,7 +65,7 @@ module Apartment
       def connect_to_new(tenant = nil)
         return reset if tenant.nil?
         
-        if $0 =~ /rake$/
+        if ($0 =~ /rake$/) || (defined?(APARTMENT_FORCE_CONNECTION) && APARTMENT_FORCE_CONNECTION)
           Apartment.establish_connection multi_tenantify(tenant, false)
         end
         
