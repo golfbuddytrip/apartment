@@ -38,7 +38,7 @@ module Apartment
       def reset
         @current = default_tenant
         @current_schema = db_connection_config(@current)[:schema] || @current
-        Apartment.connection.schema_search_path = full_search_path
+        # Apartment.connection.schema_search_path = full_search_path
       end
 
       def current
@@ -74,7 +74,7 @@ module Apartment
 
         @current = tenant.to_s
         @current_schema = new_schema
-        Apartment.connection.schema_search_path = full_search_path
+        # Apartment.connection.schema_search_path = full_search_path
         DynamicConnection.connection.schema_search_path = full_search_path
 
       rescue *rescuable_exceptions

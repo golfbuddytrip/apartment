@@ -89,7 +89,7 @@ module Apartment
           return reset if tenant.nil?
 
           connect_to_new(tenant).tap do
-            Apartment.connection.clear_query_cache
+            # Apartment.connection.clear_query_cache
           end
         end
       end
@@ -184,7 +184,7 @@ module Apartment
       #
       def connect_to_new(tenant)
         Apartment.establish_connection multi_tenantify(tenant, false)
-        Apartment.connection.active?   # call active? to manually check if this connection is valid
+        # Apartment.connection.active?   # call active? to manually check if this connection is valid
       rescue *rescuable_exceptions => exception
         Apartment::Tenant.reset if reset_on_connection_exception?
         raise_connect_error!(tenant, exception)
@@ -267,7 +267,7 @@ module Apartment
           yield(SeparateDbConnectionHandler.connection)
           SeparateDbConnectionHandler.connection.close
         else
-          yield(Apartment.connection)
+          # yield(Apartment.connection)
         end
       end
 
