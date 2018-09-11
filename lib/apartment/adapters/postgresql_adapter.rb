@@ -86,7 +86,7 @@ module Apartment
         end
 
       rescue *rescuable_exceptions => exception
-        raise TenantNotFound, "One of the following schema(s) is invalid: \"#{@current_schema}\" #{full_search_path}"
+        # raise TenantNotFound, "One of the following schema(s) is invalid: \"#{@current_schema}\" #{full_search_path}"
       end
 
     private
