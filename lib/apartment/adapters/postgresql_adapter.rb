@@ -79,9 +79,13 @@ module Apartment
         if ($0 =~ /rake$/) || (defined?($apartment_force_connection) && $apartment_force_connection)
           Apartment.connection.schema_search_path = full_search_path
         end
-        DynamicConnection.connection.schema_search_path = full_search_path
+        begin
+          DynamicConnection.connection.schema_search_path = full_search_path
+        rescue NoMethodError => exception 
+          raise ActiveRecord::NoDatabaseError
+        end
 
-      rescue *rescuable_exceptions
+      rescue *rescuable_exceptions => exception
         raise TenantNotFound, "One of the following schema(s) is invalid: \"#{@current_schema}\" #{full_search_path}"
       end
 
@@ -121,6 +125,7 @@ module Apartment
       #
       def clone_pg_schema
         pg_schema_sql = patch_search_path(pg_dump_schema)
+        pg_schema_sql = pg_schema_sql.gsub("#{default_tenant}.", "#{current}.")
         Apartment.connection.execute(pg_schema_sql)
       end
 
@@ -128,6 +133,7 @@ module Apartment
       #
       def copy_schema_migrations
         pg_migrations_data = patch_search_path(pg_dump_schema_migrations_data)
+        pg_migrations_data = pg_migrations_data.gsub("#{default_tenant}.", "#{current}.")
         Apartment.connection.execute(pg_migrations_data)
       end
 
