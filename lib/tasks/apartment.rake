@@ -22,7 +22,7 @@ apartment_namespace = namespace :apartment do
         puts("Migrating #{tenant} tenant")
         Apartment::Migrator.migrate tenant
       # rescue Apartment::TenantNotFound => e
-    rescue => e
+      rescue => e
         puts e.message
       end
     end
@@ -54,7 +54,8 @@ apartment_namespace = namespace :apartment do
       begin
         puts("Rolling back #{tenant} tenant")
         Apartment::Migrator.rollback tenant, step
-      rescue Apartment::TenantNotFound => e
+      # rescue Apartment::TenantNotFound => e
+      rescue => e
         puts e.message
       end
     end

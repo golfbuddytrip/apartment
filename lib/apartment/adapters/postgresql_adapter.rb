@@ -79,14 +79,12 @@ module Apartment
         if ($0 =~ /rake$/) || (defined?($apartment_force_connection) && $apartment_force_connection)
           Apartment.connection.schema_search_path = full_search_path
         end
-        begin
+        if Apartment.connection.schema_exists? new_schema
           DynamicConnection.connection.schema_search_path = full_search_path
-        rescue NoMethodError => exception 
-          raise ActiveRecord::NoDatabaseError
         end
 
       rescue *rescuable_exceptions => exception
-        # raise TenantNotFound, "One of the following schema(s) is invalid: \"#{@current_schema}\" #{full_search_path}"
+        raise TenantNotFound, "One of the following schema(s) is invalid: \"#{@current_schema}\" #{full_search_path}"
       end
 
     private
